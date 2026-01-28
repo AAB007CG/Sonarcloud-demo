@@ -1,0 +1,34 @@
+
+name: SonarCloud Code Review
+
+on:
+  push:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v7
+        env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            args: |
+                -Dsonar.organization=aab007cg-1
+                -Dsonar.projectKey=AAB007CG_Sonarcloud-demo
+                -Dsonar.projectName=Sonarcloud-demo
