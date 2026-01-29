@@ -31,5 +31,4 @@ jobs:
                 -Dsonar.organization=aab007cg-1
                 -Dsonar.projectKey=AAB007CG_Sonarcloud-demo
                 -Dsonar.projectName=Sonarcloud-demo
-                -Dsonar.sources=agent
                 -Dsonar.language=py
