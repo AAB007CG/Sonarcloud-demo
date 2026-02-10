@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <AssemblyName>D365PluginProject.Tests</AssemblyName>
+    <RootNamespace>D365PluginProject.Tests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Unit Testing Framework -->
+    <PackageReference Include="MSTest.TestFramework" Version="2.3.2" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.3.2" />
+    
+    <!-- FakeXrmEasy for Dataverse Plugin Testing -->
+    <PackageReference Include="FakeXrmEasy" Version="2.2.135" />
+    
+    <!-- D365/Dataverse SDK -->
+    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.60" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Reference the main plugin project -->
+    <ProjectReference Include="..\D365PluginProject.csproj" />
+  </ItemGroup>
+
+</Project>
