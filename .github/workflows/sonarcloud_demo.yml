@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - '**'
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
 
 permissions:
   contents: read
@@ -15,6 +17,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # --- PR title validation (runs only on PR events) ---
+      - name: Validate PR title format
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Initialize variables
+            const pr = context && context.payload && context.payload.pull_request ? context.payload.pull_request : null;
+            const title = pr && pr.title ? pr.title.trim() : '';
+
+            // Null/empty check
+            if (!pr) {
+              core.setFailed('No pull request payload found in the event context.');
+              return;
+            }
+            if (!title) {
+              core.setFailed('PR title is empty.');
+              return;
+            }
+
+            // Convention: [A-Z]{2,10}-[0-9]+: <description>
+            const pattern = new RegExp('^[A-Z]{2,10}-\\d+:\\s?.*$');
+            const matches = pattern.test(title);
+
+            // Conditional assignment of result message
+            const resultMessage = matches
+              ? `✅ PR title matches convention: "${title}"`
+              : `❌ Invalid PR title: "${title}"\nExpected pattern: [A-Z]{2,10}-[0-9]+: <description>`;
+
+            core.info(resultMessage);
+            if (!matches) {
+              core.setFailed('PR title does not match the required convention.');
+            }
+
+      # --- Your existing steps ---
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -31,7 +68,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: .
-          args: >
+          args: |
             -Dsonar.organization=aab007cg-1
             -Dsonar.projectKey=AAB007CG_Sonarcloud-demo
             -Dsonar.projectName=Sonarcloud-demo
